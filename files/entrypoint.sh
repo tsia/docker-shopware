@@ -58,8 +58,8 @@ return array(
         'username' => '${DB_USER:-shopware}',
         'password' => '${DB_PASSWORD:-shopware}',
         'dbname' => '${DB_DATABASE:-shopware}',
-        'host' => '${DB_HOST:-${DB_PORT_3306_TCP_ADDR}}',
-        'port' => '${DB_PORT:-${DB_PORT_3306_TCP_PORT:-3306}}'
+        'host' => '${DB_HOST:-db}',
+        'port' => '${DB_PORT:-3306}'
     )
 );
 EOF
@@ -70,8 +70,8 @@ cat > /etc/phpmyadmin/config-db.php << EOF
 \$dbpass='${DB_PASSWORD:-shopware}';
 \$basepath='';
 \$dbname='${DB_DATABASE:-shopware}';
-\$dbserver='${DB_HOST:-${DB_PORT_3306_TCP_ADDR}}';
-\$dbport='${DB_PORT:-${DB_PORT_3306_TCP_PORT:-3306}}';
+\$dbserver='${DB_HOST:-db}';
+\$dbport='${DB_PORT:-3306}';
 \$dbtype='mysql';
 EOF
 
