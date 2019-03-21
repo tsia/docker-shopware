@@ -1,23 +1,39 @@
-shopwaredb:
-  image: mysql:5.5
-  environment:
-   - MYSQL_ROOT_PASSWORD=bitte_aendern
-  volumes:
-   - /var/lib/docker/persistent-volumes/shopware/db:/var/lib/mysql
-
-dbclient:
-  image: mysql:5.5
-  links:
-   - shopwaredb:mysql
-  command: sh -c 'exec mysql -h"$$MYSQL_PORT_3306_TCP_ADDR" -P"$$MYSQL_PORT_3306_TCP_PORT" -uroot -pbitte_aendern'
-
-shopware:
-  image: kurthuwig/shopware:latest
-  environment:
-   - PHPMYADMIN_PW=bitte_aendern
-  volumes:
-   - /var/lib/docker/persistent-volumes/shopware/shopware/var/www/html:/var/www/html
-  links:
-   - shopwaredb:db
-  ports:
-   - "80:80"
+version: "3"
+services:
+  web:
+    image: kurthuwig/shopware:latest
+    deploy:
+      replicas: 2
+      restart_policy:
+        condition: on-failure
+    ports:
+      - "80:80"
+    networks:
+      - shopwarenet
+    environment:
+      - PHPMYADMIN_PW=password
+    volumes:
+      - /var/lib/docker/persistent-volumes/shopware/shopware/var/www/html:/var/www/html
+  db:
+    image: mysql:5.5
+    deploy:
+      replicas: 0
+      restart_policy:
+        condition: on-failure
+    networks:
+      - shopwarenet
+    environment:
+      - MYSQL_ROOT_PASSWORD=password
+    volumes:
+      - /var/lib/docker/persistent-volumes/shopware/db:/var/lib/mysql
+  dbclient:
+    image: mysql:5.5
+    deploy:
+      replicas: 0
+      restart_policy:
+        condition: on-failure
+    networks:
+      - shopwarenet
+    command: sh -c 'exec mysql -h"$$MYSQL_PORT_3306_TCP_ADDR" -P"$$MYSQL_PORT_3306_TCP_PORT" -uroot -pbitte_aendern'
+networks:
+  webnet:
