@@ -13,11 +13,11 @@ services:
     environment:
       - PHPMYADMIN_PW=password
     volumes:
-      - /var/lib/docker/persistent-volumes/shopware/shopware/var/www/html:/var/www/html
+      - /var/lib/docker/persistent-volumes/shopware/var/www/html:/var/www/html
   db:
     image: mysql:5.5
     deploy:
-      replicas: 0
+      replicas: 1
       restart_policy:
         condition: on-failure
     networks:
@@ -29,11 +29,11 @@ services:
   dbclient:
     image: mysql:5.5
     deploy:
-      replicas: 0
+      replicas: 1
       restart_policy:
         condition: on-failure
     networks:
       - shopwarenet
-    command: sh -c 'exec mysql -h"$$MYSQL_PORT_3306_TCP_ADDR" -P"$$MYSQL_PORT_3306_TCP_PORT" -uroot -pbitte_aendern'
+    command: sh -c 'exec mysql -h db -uroot -pbitte_aendern'
 networks:
   shopwarenet:
